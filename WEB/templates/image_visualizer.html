@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mostrar imagen generada</title>
+    <script>
+        window.onload = function() {
+            fetch('http://localhost:5000/generate_image/',{
+                method: 'GET', 
+                headers: {
+                'Content-Type': 'application/json'
+                }
+
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    document.body.appendChild(img);
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    </script>
+</head>
+<body>
+    <h1>Imagen generada</h1>
+</body>
+</html>

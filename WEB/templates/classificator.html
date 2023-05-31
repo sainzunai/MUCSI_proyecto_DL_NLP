@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Illness Classification Model</title>
+    <style>
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 300px;
+            height: auto;
+        }
+
+        #container {
+            margin-top: 150px;
+            text-align: center;
+        }
+
+        #myButton {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .align-left {
+            float: left;
+        }
+
+        .vertical-align {
+            vertical-align: middle;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .inline-elements {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <a id="myButton" href="/">Modelo Generativo</a>    
+    <img id="logo" src="{{url_for('static', filename='ud.jpg')}}" alt="Logo de la Universidad de Deusto">
+    <div id="container">
+        <h1>Mental Illness Classification Model</h1>
+
+        <form id="api-form">
+            <div>
+                <label for="input-data" class="align-left">Input text:</label>
+                <textarea id="input-data" rows="5" cols="90"></textarea>
+                <button type="submit">Enviar</button>
+            </div>
+            <label id = "output-data"></label>
+        </div>
+    </form>
+</body>
+
+<script>
+    const form = document.getElementById('api-form');
+    const input = document.getElementById('input-data');
+    const output = document.getElementById('output-data');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const inputData = input.value;
+
+        // Realizar una solicitud a la API y mostrar la salida en el elemento 'output'
+        fetch('http://localhost:5000/execute_classification_model/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt: inputData })
+        })
+        .then(response => response.json())
+        .then(data => {
+            output.innerText = data.prediccion;
+            console.log(data);
+
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+
+</html>

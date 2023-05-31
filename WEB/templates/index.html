@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Illness Generative Model</title>
+    <style>
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 300px;
+            height: auto;
+        }
+
+        #container {
+            margin-top: 150px;
+            text-align: center;
+        }
+
+        #myButton {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .align-left {
+            float: left;
+        }
+
+        .vertical-align {
+            vertical-align: middle;
+        }
+
+        .flex-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .inline-elements {
+            display: inline-block;
+        }
+        
+      
+
+    </style>
+</head>
+
+<body>
+    <a id="myButton" href="/classification">Modelo Clasificación</a>    
+
+    <img id="logo" src="{{url_for('static', filename='ud.jpg')}}" alt="Logo de la Universidad de Deusto">
+    <div id = "container">
+        <h1>Mental Illness Generative Model</h1>
+        <form id="api-form">
+            <label for="input-data">Prompt:</label>
+            <inline>
+                <input type="text" id="input-data" maxlength="50" style="font-size: 13px; width: 300px; height: 20px;" size="10">
+                <button type="submit">Enviar</button>
+            </inline>
+            <br>
+            <br>
+            <select id="myComboBox">
+
+            </select>
+            <br>
+            <br>
+            
+        </form>
+        <p></p>
+        <div id="output-data" style="text-align: justify; margin-left: 100px; margin-right: 100px;"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('api-form');
+        const input = document.getElementById('input-data');
+        const output = document.getElementById('output-data');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            //ComboBox: extraer dato
+            var comboBox = document.getElementById("myComboBox");
+            var opcionSeleccionada = comboBox.value;
+            console.log(opcionSeleccionada);
+
+            //Boton Submit:
+            const inputData = input.value;
+            // Realizar una solicitud a la API y mostrar la salida en el elemento 'output'
+            fetch('http://localhost:5000/execute_generative_model/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: inputData, modelo_seleccionado : opcionSeleccionada })
+            })
+            .then(response => response.json())
+            .then(data => {
+                output.innerText = data.res;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <script>
+        // Realizar la solicitud a la API y obtener la respuesta
+        fetch("http://localhost:5000/list_available_models/",{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({  })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.modelos);
+    
+                var comboBox = document.getElementById("myComboBox");
+                var opciones = data.modelos;
+    
+                // Generar las opciones del combo box
+                opciones.forEach(op => {
+                    var option = document.createElement("option");
+                    option.value = op;
+                    option.text = op;
+                    comboBox.appendChild(option);
+                    console.log(option);
+                });
+            })
+            .catch(error => {
+                console.error("Error al obtener las opciones: ", error);
+            });
+    </script>
+    
+    
+</body>
+</html>

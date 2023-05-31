@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  img_api:
+    image: img_api
+    ports:
+      - 5000:5000  # Puerto del host: Puerto del contenedor
+    volumes:
+      - ./API:/app  # Ruta del código fuente de la API
+
+  img_web:
+    image: img_web
+    ports:
+      - 8000:8000  # Puerto del host: Puerto del contenedor
+    volumes:
+      - ./WEB:/var/www/html  # Ruta del código fuente de la web
